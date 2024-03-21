@@ -1,18 +1,16 @@
+import datetime
+from datetime import timedelta
 from pathlib import Path
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
-# Application definition
+AUTH_USER_MODEL = 'users.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,6 +19,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
+    'rest_framework',
+    'users.apps.UsersConfig',
+    'reviews.apps.ReviewsConfig',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -34,6 +37,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api_yamdb.urls'
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 TEMPLATES_DIR = BASE_DIR / 'templates'
 TEMPLATES = [
@@ -54,18 +60,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'api_yamdb.wsgi.application'
 
-
-# Database
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
-# Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -82,10 +82,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 
-# Internationalization
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}
 
-LANGUAGE_CODE = 'en-us'
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'UTC'
 
@@ -95,9 +112,21 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-
 STATIC_URL = '/static/'
+STATICFILES_DIRS = ((BASE_DIR / 'static/'), )
 
-STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+CONFIRMATION_CODE_LENGHT = 20
+
+EMAIL_SENDER_ADRESS = 'from@example.com'
+
+EMAIL_MAX_LEN = 254
+
+USERNAME_MAX_LEN = 150
+
+THE_EARLIEST_YEAR = -3000
+
+CURRENT_YEAR = datetime.datetime.now().year
+
+MAX_NAME_LENGTH = 256
+
+CHARACTER_LIMIT = 30

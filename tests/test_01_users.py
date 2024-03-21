@@ -2,9 +2,8 @@ from http import HTTPStatus
 
 import pytest
 
-from tests.utils import (
-    check_pagination, invalid_data_for_user_patch_and_creation
-)
+from tests.utils import (check_pagination,
+                         invalid_data_for_user_patch_and_creation)
 
 
 @pytest.mark.django_db(transaction=True)
@@ -517,7 +516,7 @@ class Test01UserAPI:
             response = client.patch(f'{self.USERS_ME_URL}', data=data)
             assert response.status_code == HTTPStatus.OK, (
                 'Проверьте, что PATCH-запрос к '
-                f'`{self.USERUSERS_ME_URLS_URL}` доступен пользователям всех '
+                f'`{self.USERS_ME_URL}` доступен пользователям всех '
                 'ролей и возвращает ответ со статусом 200.'
             )
             user = django_user_model.objects.filter(
